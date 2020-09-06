@@ -61,6 +61,7 @@ uint32_t readCommand();
 void SendIdentityN64();
 void SendIdentityGC();
 void SendOriginGC();
+void GCN64_SendData(uint8_t *data, uint8_t size);
 void SendRunDataN64(N64ControllerData data);
 void SendControllerDataN64(unsigned long data);
 void SendRunDataGC(GCControllerData gcdata);

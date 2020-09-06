@@ -491,6 +491,7 @@ void EXTI4_IRQHandler(void)
 	TASRun *tasrun = TASRunGetByIndex(RUN_A);
 	Console c = TASRunGetConsole(tasrun);
 	GCControllerData gc_data;
+	uint64_t temp = 0;
 
 	__disable_irq();
 	uint32_t cmd;
@@ -522,11 +523,11 @@ void EXTI4_IRQHandler(void)
 		  frame = GetNextFrame(tasrun);
 		  if(frame == NULL) // buffer underflow
 		  {
-			  SendControllerDataN64(0); // send blank controller data
+			  GCN64_SendData((uint8_t*)&temp, 4); // send blank controller data
 		  }
 		  else
 		  {
-			  SendRunDataN64(frame[0][0][0].n64_data);
+			  GCN64_SendData((uint8_t*)&frame[0][0][0].n64_data, 4);
 		  }
 		  break;
 	  case 0x41: //gamecube origin call

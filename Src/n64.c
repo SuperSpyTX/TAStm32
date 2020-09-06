@@ -92,10 +92,8 @@ void SendStop()
 void SendIdentityN64()
 {
     // reply 0x05, 0x00, 0x02
-    SendByte(0x05);
-    SendByte(0x00);
-    SendByte(0x02);
-    SendStop();
+    uint32_t data = 0x00020005;
+    GCN64_SendData((uint8_t*)&data, 3);
 }
 
 void write_1()
@@ -112,6 +110,19 @@ void write_0()
 	my_wait_us_asm(3);
 	P1_DATA_2_GPIO_Port->BSRR = P1_DATA_2_Pin;
     my_wait_us_asm(1);
+}
+
+void GCN64_SendData(uint8_t *data, uint8_t bytes)
+{
+	while (bytes) {
+		uint8_t d = *data;
+		for(uint8_t b=0; b<8; ++b) {
+			(d & 0x80) ? write_1() : write_0();
+			d <<= 1;
+		}
+		++data;
+		--bytes;
+	}
 }
 
 // send a byte from LSB to MSB (proper serialization)
@@ -227,10 +238,9 @@ void SendControllerDataGC(uint64_t data)
 
 void SendIdentityGC()
 {
-    SendByte(0x90);
-    SendByte(0x00);
-    SendByte(0x0C);
-    SendStop();
+    // reply 0x90, 0x00, 0x0C
+	uint32_t data = 0x000C0090;
+	GCN64_SendData((uint8_t*)&data, 3);
 }
 
 void SendOriginGC()
